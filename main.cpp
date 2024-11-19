@@ -24,7 +24,6 @@ struct Cloud {
 class Background {
 public:
     Background(SDL_Renderer* renderer) : renderer(renderer) {
-        // Cargar el tileset
         SDL_Surface* tilesetSurface = IMG_Load("tileset.png");
         if (!tilesetSurface) {
             std::cerr << "Error cargando el tileset: " << IMG_GetError() << std::endl;
@@ -37,23 +36,20 @@ public:
             exit(-1);
         }
 
-        // Definir el tilemap
         tilemap.resize(19);
         for (int i = 0; i < 19; ++i) {
-            tilemap[i].resize(25, 0); // Inicializar todos los tiles a 0 (cielo)
+            tilemap[i].resize(25, 0);
         }
 
-        // Definir tiles de suelo (tile 1) en las últimas 2 filas
         for (int i = 17; i < 19; ++i) {
             for (int j = 0; j < 25; ++j) {
-                tilemap[i][j] = 1; // Tile de suelo
+                tilemap[i][j] = 1; 
             }
         }
 
-        // Definir tiles del castillo (tile 2) en filas 15-16 en columnas 5-19
         for (int i = 15; i < 17; ++i) {
             for (int j = 5; j < 20; ++j) {
-                tilemap[i][j] = 2; // Tile de castillo
+                tilemap[i][j] = 2; 
             }
         }
 
@@ -71,7 +67,7 @@ public:
     void renderBackground() {
         int tileWidth = 32;
         int tileHeight = 32;
-        int tilesetColumns = 4; // Número de columnas en el tileset
+        int tilesetColumns = 4; 
 
         for (int i = 0; i < tilemap.size(); ++i) {
             for (int j = 0; j < tilemap[i].size(); ++j) {
@@ -174,29 +170,24 @@ public:
         int renderX = static_cast<int>(x);
         int renderY = static_cast<int>(y);
 
-        // Corona
         SDL_SetRenderDrawColor(renderer, 255, 223, 0, 255);
         SDL_Rect crownRect = {renderX + 8, renderY - 8, 16, 8};
         SDL_RenderFillRect(renderer, &crownRect);
 
-        // Cabeza
         SDL_SetRenderDrawColor(renderer, 255, 182, 193, 255);
         SDL_Rect headRect = {renderX + 8, renderY, 16, 16};
         SDL_RenderFillRect(renderer, &headRect);
 
-        // Cuerpo
         SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
         SDL_Rect bodyRect = {renderX + 8, renderY + 16, 16, 24};
         SDL_RenderFillRect(renderer, &bodyRect);
 
-        // Brazos
         SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
         SDL_Rect leftArmRect = {renderX, renderY + 16, 8, 16};
         SDL_Rect rightArmRect = {renderX + 24, renderY + 16, 8, 16};
         SDL_RenderFillRect(renderer, &leftArmRect);
         SDL_RenderFillRect(renderer, &rightArmRect);
 
-        // Piernas
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_Rect leftLegRect = {renderX + 8, renderY + 40, 8, 16};
         SDL_Rect rightLegRect = {renderX + 16, renderY + 40, 8, 16};
@@ -239,7 +230,6 @@ public:
             if (x < 0) movingRight = true;
         }
 
-        // Colisión con el jugador
         if (abs(x - playerX) < dogWidth && abs(y - playerY) < 32) {
             Mix_PlayChannel(-1, dieSound, 0);
         }
@@ -249,24 +239,20 @@ public:
         int renderX = static_cast<int>(x);
         int renderY = static_cast<int>(y);
 
-        // Cabeza
         SDL_SetRenderDrawColor(renderer, 139, 69, 19, 255);
         SDL_Rect headRect = {renderX, renderY, 16, 16};
         SDL_RenderFillRect(renderer, &headRect);
 
-        // Cuerpo
         SDL_SetRenderDrawColor(renderer, 160, 82, 45, 255);
         SDL_Rect bodyRect = {renderX - 8, renderY + 16, 32, 16};
         SDL_RenderFillRect(renderer, &bodyRect);
 
-        // Piernas
         SDL_SetRenderDrawColor(renderer, 139, 69, 19, 255);
         SDL_Rect leftLegRect = {renderX - 6, renderY + 32, 8, 8};
         SDL_Rect rightLegRect = {renderX + 14, renderY + 32, 8, 8};
         SDL_RenderFillRect(renderer, &leftLegRect);
         SDL_RenderFillRect(renderer, &rightLegRect);
 
-        // Cola
         SDL_SetRenderDrawColor(renderer, 160, 82, 45, 255);
         SDL_Rect tailRect = {renderX - 10, renderY + 20, 8, 4};
         SDL_RenderFillRect(renderer, &tailRect);
@@ -332,7 +318,6 @@ class MazeLevel {
 public:
     MazeLevel(SDL_Renderer* renderer, Character* character, TTF_Font* font)
         : renderer(renderer), character(character), font(font), levelCompleted(false) {
-        // Definir el mapa del laberinto (1 = pared, 0 = camino, 2 = inicio, 3 = fin)
         mazeMap = {
             {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
             {1,2,0,0,1,0,0,0,1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,3,1},
@@ -353,15 +338,14 @@ public:
         tileHeight = WINDOW_HEIGHT / mazeMap.size();
 
         character->disableJump();
-        character->setMovementSpeed(1800.0f); // Aumentar velocidad del jugador
+        character->setMovementSpeed(1800.0f);
 
-        // Encontrar posición inicial
         for (int i = 0; i < mazeMap.size(); ++i) {
             for (int j = 0; j < mazeMap[i].size(); ++j) {
-                if (mazeMap[i][j] == 2) { // Inicio
+                if (mazeMap[i][j] == 2) { 
                     character->moveTo(j * tileWidth + tileWidth / 2, i * tileHeight + tileHeight / 2);
                 }
-                if (mazeMap[i][j] == 3) { // Fin
+                if (mazeMap[i][j] == 3) { 
                     endX = j;
                     endY = i;
                 }
@@ -372,7 +356,6 @@ public:
     void update(float deltaTime) {
         if (levelCompleted) return;
 
-        // Comprobar colisiones
         SDL_Rect charRect = character->getRect();
         int charMidX = charRect.x + charRect.w / 2;
         int charMidY = charRect.y + charRect.h / 2;
@@ -381,12 +364,10 @@ public:
         int gridY = charMidY / tileHeight;
 
         if (mazeMap[gridY][gridX] == 1) {
-            // Si el personaje toca una pared, reiniciamos su posición inicial
             character->moveTo(startX * tileWidth + tileWidth / 2, startY * tileHeight + tileHeight / 2);
         }
 
         if (mazeMap[gridY][gridX] == 3) {
-            // Si el personaje llega al final
             levelCompleted = true;
         }
     }
@@ -401,22 +382,18 @@ public:
                     tileHeight
                 };
                 if (mazeMap[i][j] == 1) {
-                    // Pared
-                    SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255); // Azul para las paredes
+                    SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255); 
                     SDL_RenderFillRect(renderer, &tileRect);
                 } else if (mazeMap[i][j] == 0) {
-                    // Camino
-                    SDL_SetRenderDrawColor(renderer, 200, 200, 200, 255); // Gris claro para el camino
+                    SDL_SetRenderDrawColor(renderer, 200, 200, 200, 255);
                     SDL_RenderFillRect(renderer, &tileRect);
                 } else if (mazeMap[i][j] == 2) {
-                    // Inicio
-                    SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255); // Verde para el inicio
+                    SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255); 
                     SDL_RenderFillRect(renderer, &tileRect);
                     startX = j;
                     startY = i;
                 } else if (mazeMap[i][j] == 3) {
-                    // Fin
-                    SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255); // Rojo para el final
+                    SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
                     SDL_RenderFillRect(renderer, &tileRect);
                 }
             }
@@ -514,7 +491,6 @@ int main(int argc, char* argv[]) {
                         mazeLevel = new MazeLevel(renderer, &character, font);
                     }
                 }
-                // Controles de movimiento durante la intro
                 const Uint8* keystate = SDL_GetKeyboardState(NULL);
                 if (keystate[SDL_SCANCODE_RIGHT]) {
                     character.moveRight(deltaTime);
@@ -523,7 +499,6 @@ int main(int argc, char* argv[]) {
                     character.moveLeft(deltaTime);
                 }
             } else if (gameState == MAZE) {
-                // Controles para el laberinto
                 const Uint8* keystate = SDL_GetKeyboardState(NULL);
                 if (keystate[SDL_SCANCODE_UP]) {
                     character.moveUp(deltaTime);
@@ -552,12 +527,10 @@ int main(int argc, char* argv[]) {
             }
         }
 
-        // Actualizar y renderizar según el estado del juego
         if (gameState == INTRO) {
             character.update(deltaTime);
             dog.update(deltaTime, character.getX(), character.getY());
 
-            // Limpiar pantalla
             SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
             SDL_RenderClear(renderer);
 
@@ -569,17 +542,14 @@ int main(int argc, char* argv[]) {
         } else if (gameState == MAZE) {
             mazeLevel->update(deltaTime);
 
-            // Limpiar pantalla
             SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
             SDL_RenderClear(renderer);
 
             mazeLevel->render();
         } else if (gameState == VICTORY) {
-            // Limpiar pantalla
             SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
             SDL_RenderClear(renderer);
 
-            // Mostrar mensaje de victoria
             SDL_Color color = {255, 255, 0};
             SDL_Surface* surface = TTF_RenderText_Blended(font, "¡Felicidades, has rescatado a la princesa!", color);
             SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
@@ -597,7 +567,6 @@ int main(int argc, char* argv[]) {
         SDL_RenderPresent(renderer);
     }
 
-    // Limpiar recursos
     if (mazeLevel) {
         delete mazeLevel;
     }
